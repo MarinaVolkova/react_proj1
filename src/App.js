@@ -1,24 +1,23 @@
-//import logo from './logo.svg';
-import './App.css';
+import { ListProvider } from "./context/ListContext";
+import { ChakraProvider } from '@chakra-ui/react';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>header</h1>
-      </header>
-      <main className="App-main">
-        <h2>main</h2>
-        <section> 
-          <h4> section</h4>
-        </section>
-      </main>
-      <footer className="App-footer">
-        <h2>footer</h2>
-      </footer>
-    </div>
-  );
-}
+//использовала композицию компонентов, потому что куча стилей тут меня бесит:) 
+import Header from "./components/Header"; 
+import List from "./components/List";
+import Footer from "./components/Footer";
 
+function App(){
+    return(
+        <>
+        <ChakraProvider>
+            <Header />
+            <ListProvider>
+                <List />
+            </ListProvider>
+           <Footer />
+        </ChakraProvider>
+        </>
+    );
+};
 
 export default App;

@@ -1,21 +1,11 @@
-import { ListProvider } from "./context/ListContext";
-import { ChakraProvider } from '@chakra-ui/react';
-
-//использовала композицию компонентов, потому что куча стилей тут меня бесит:) 
-import Header from "./components/Header"; 
-import List from "./components/List";
-import Footer from "./components/Footer";
+import Routes from "./routes/Routes";
+import Header from "./components/Header";
 
 function App(){
     return(
         <>
-        <ChakraProvider>
-            <Header />
-            <ListProvider>
-                <List />
-            </ListProvider>
-           <Footer />
-        </ChakraProvider>
+          <Header />
+          <Routes />
         </>
     );
 };

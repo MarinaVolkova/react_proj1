@@ -15,15 +15,18 @@ const reducer = (state, action) => {
     //     }
     // }  
     return state;
+
+// default:
+//     throw new Error(`Unhandled action type: ${action.type}`);
 }
 
 export const ListContext = createContext(firstState); //создаем контекст
 
 export const ListProvider = ({ children }) => {
 
-    const [state, dispathc] = useReducer(reducer, firstState);
+    const [state, dispatch] = useReducer(reducer, firstState);
 
-    return <ListContext.Provider value={{dispathc, state}}>
+    return <ListContext.Provider value={{dispatch, state}}>
         { children }
     </ListContext.Provider>
 }

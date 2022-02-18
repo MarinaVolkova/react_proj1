@@ -1,7 +1,7 @@
 import React from "react";
 import {Box, Image} from '@chakra-ui/react'
 
-const Card = () => {
+const Card = ( {data} ) => {
     const property = {
         imageUrl: '../1.jpg',
         imageAlt: 'тут картинка должна быть, но что-то пошло не так',
@@ -13,6 +13,7 @@ const Card = () => {
             <Box p='6'>
                 <Box fontWeight='semibold'>
                 {property.title}
+                { data }
                 </Box>
             </Box>
     </Box>

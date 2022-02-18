@@ -6,14 +6,7 @@ const firstState = { // начальное состояние
 }
 
 const reducer = (state, action) => {
-//state - начальное состояние 
-//action - объект, благодоря которому мы можем менять состояние в reducer
-    // if (action.type === 'CHANGE_VALUE'){
-    //      return {
-    //         ...state,
-    //         data: state.data
-    //     }
-    // }  
+
     return state;
 }
 
@@ -21,9 +14,9 @@ export const ListContext = createContext(firstState); //создаем конт�
 
 export const ListProvider = ({ children }) => {
 
-    const [state, dispathc] = useReducer(reducer, firstState);
+    const [state, dispatch] = useReducer(reducer, firstState);
 
-    return <ListContext.Provider value={{dispathc, state}}>
+    return <ListContext.Provider value={{dispatch, state}}>
         { children }
     </ListContext.Provider>
 }

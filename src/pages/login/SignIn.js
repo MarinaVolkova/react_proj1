@@ -42,23 +42,19 @@ const SignIn = () => {
     
     const onSubmit = async data =>{
         try {
+            setLoading(1);
             const response = await api.auth.login(data);
-            await signIn(response.data)
-            setLoading(1)
-            setTimeout(() => {
-                push('/Profile');
-            }, 500);
+            await signIn(response.data);
+            push('/Profile');
           } catch (e) {
-            setLoading(1)
-            setTimeout(() => {
-                setLoading(0)
-                toast({
-                    title: `${e.response.data.errors.password ?? e.response.data.errors.email}`,
-                    position: 'top',
-                    status: 'error',
-                    isClosable: true,
-                  })
-            }, 500);
+            toast({
+                title: `${e.response.data.errors.password ?? e.response.data.errors.email}`,
+                position: 'top',
+                status: 'error',
+                isClosable: true,
+            })
+        } finally {
+            setLoading(0);
         }
     };
 

@@ -1,23 +1,32 @@
 import React from "react";
-import {Box, Image} from '@chakra-ui/react'
+import { connect } from 'react-redux';
+import {Box, Image, Button} from '@chakra-ui/react'
+import { del } from "../store/actions/addDel";
 
-const Card = ( {data} ) => {
-    const property = {
-        imageUrl: '../1.jpg',
-        imageAlt: 'тут картинка должна быть, но что-то пошло не так',
-        title: 'пастельно-постельный кот'
-      }
+const Card = ( data ) => {
+    console.log(data)
     return(
     <Box maxW='xs' borderWidth='1px' borderRadius='lg' overflow='hidden' margin='1rem'>
-        <Image src={property.imageUrl} alt={property.imageAlt} />
+        <Image src={data.imageUrl} alt={data.imageAlt} />
             <Box p='6'>
                 <Box fontWeight='semibold'>
-                {property.title}
-                { data }
+                {data.title}
                 </Box>
+                <Button colorScheme='teal' variant='solid' onClick={() => data.delElem()}>Удалить</Button>
             </Box>
     </Box>
     );
 }
 
-export default Card;
+const mapStateToProps = (state, props) => ({
+    ListData: state.addDel.ListData
+})
+
+
+const mapDispatchToProps = (dispatch) => {
+    
+    return {
+        delElem: (param) => dispatch(del(param))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Card);

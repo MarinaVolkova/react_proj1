@@ -1,24 +1,30 @@
-import React, { useContext } from 'react';
-import { ListContext } from '../../context/ListContext';
+import React from 'react';
+import { connect } from 'react-redux';
 import {Container, Flex } from '@chakra-ui/react'
 import Card from '../../components/Card';
 
 
-const Home = () => {
-    const {state, dispathc} = useContext(ListContext);
-    
+const Home = (props) => {
+
     return(
         <Container maxW = 'container.xl'> 
             <Flex justifyContent='space-around' alignItems='center' flexWrap='wrap' >
-                <Card ></Card>
-                <Card ></Card>
-                <Card ></Card>
-                <Card ></Card>
-                <Card ></Card>
-                <Card ></Card>
+            {
+                    props.ListData.map(({ id, imageUrl, imageAlt, title}) => (<Card
+                          key={id}
+                          imageUrl={imageUrl}
+                          imageAlt={imageAlt}
+                          title={title}
+                        />
+                    ))
+                }
+        
             </Flex>
         </Container>
     );
 }
+const mapStateToProps = (state, props) => ({
+    ListData: state.addDel.ListData
+})
 
-export default Home;
+export default connect(mapStateToProps, null)(Home);

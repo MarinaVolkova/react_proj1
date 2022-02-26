@@ -22,6 +22,9 @@ const ListData = [
     }
 ]
 
+const rand = () =>{
+    return Math.floor(Math.random() * 1000)
+}
 
 const initialState = { 
     ListData: ListData
@@ -34,7 +37,7 @@ const addDelReducer = (state = initialState, actions) => {
             imageUrl: '../1.jpg',
             imageAlt: 'тут картинка должна быть, но что-то пошло не так',
             title: 'пастельно-постельный кот',
-            id: ListData.length + 1
+            id: rand()
         }
             return {
                 ...state,

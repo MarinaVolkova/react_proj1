@@ -20,6 +20,8 @@ import {EmailIcon, LockIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { getUser, signUn } from "../../store/actions/auth";
+import { connect } from "react-redux";
 
 
 const schema = yup.object({
@@ -31,11 +33,10 @@ const schema = yup.object({
 
 
   
-const SignUp = () => {
+const SignUp = (props) => {
     const toast = useToast();
     const push = useNavigate();
-    const [loading, setLoading] = useState(0);
-    const { user, signUn} = useAuth();
+
     const { register, handleSubmit, formState: { errors } } =  useForm({
         resolver: yupResolver(schema),
     });
@@ -43,7 +44,7 @@ const SignUp = () => {
     const onSubmit = async data =>{
         try {
             // const response = await api.auth.register(data);
-            // await signUn(response.data)
+            // await props.signUnUser(response.data)
             console.log(data)
           } catch (e) {
               console.log(e)
@@ -99,4 +100,12 @@ return (
     );
 };
 
-export default SignUp;
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signUnUser: (data) => dispatch(signUn(data)),
+        getUsers: () => dispatch(getUser()),
+
+    }
+}
+export default connect(null, mapDispatchToProps)(SignUp);

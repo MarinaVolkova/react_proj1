@@ -1,24 +1,24 @@
 import { ADD, DEL } from "../../types/types"
 
 
-const ListData = [
+const data = [
     {
         imageUrl: '../1.jpg',
         imageAlt: 'тут картинка должна быть, но что-то пошло не так',
         title: 'пастельно-постельный кот',
-        id: '22'
+        id: 22
     },
     {
         imageUrl: '../1.jpg',
         imageAlt: 'тут картинка должна быть, но что-то пошло не так',
         title: 'пастельно-постельный кот',
-        id: '232'
+        id: 232
     },
     {
         imageUrl: '../1.jpg',
         imageAlt: 'тут картинка должна быть, но что-то пошло не так',
         title: 'пастельно-постельный кот',
-        id: '234',
+        id: 234,
     }
 ]
 
@@ -27,27 +27,27 @@ const rand = () =>{
 }
 
 const initialState = { 
-    ListData: ListData
+    data: data || []
 }
 
-const addDelReducer = (state = initialState, actions) => {
-    switch (actions.type) {
+const catsReducer = (state = initialState, action) => {
+    switch (action.type) {
         case ADD:
             const card = {
             imageUrl: '../1.jpg',
             imageAlt: 'тут картинка должна быть, но что-то пошло не так',
-            title: 'пастельно-постельный кот',
+            title: `пастельно-постельный кот`,
             id: rand()
         }
             return {
                 ...state,
-                ListData: [...state.ListData, card]
+                data: [...state.data, card]
             }
         case DEL:
-
+            const updList = state.data.filter((elem) => +elem.id !== +action.payload);  
             return {
                 ...state,
-                ListData: [...state.ListData].slice(0, actions.payload)
+                data: [...updList] 
             }
     
         default:
@@ -55,4 +55,4 @@ const addDelReducer = (state = initialState, actions) => {
     }
 }
 
-export default addDelReducer;
+export default catsReducer;

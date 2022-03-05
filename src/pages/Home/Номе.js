@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {Container, Flex } from '@chakra-ui/react'
+import { Container, Flex } from '@chakra-ui/react'
 import Card from '../../components/Card';
+import { getCatData } from '../../store/selectors/cats';
 
 
 const Home = (props) => {
@@ -10,8 +11,9 @@ const Home = (props) => {
         <Container maxW = 'container.xl'> 
             <Flex justifyContent='space-around' alignItems='center' flexWrap='wrap' >
             {
-                    props.ListData.map(({ id, imageUrl, imageAlt, title}) => (<Card
+                    props.data.map(({ id, imageUrl, imageAlt, title}) => (<Card
                           key={id}
+                          id={id}
                           imageUrl={imageUrl}
                           imageAlt={imageAlt}
                           title={title}
@@ -24,7 +26,7 @@ const Home = (props) => {
     );
 }
 const mapStateToProps = (state, props) => ({
-    ListData: state.addDel.ListData
+    data: getCatData(state)
 })
 
 export default connect(mapStateToProps, null)(Home);

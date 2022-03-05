@@ -1,7 +1,6 @@
-import React, {useEffect, useContext, useState} from "react";
+import React, {useState, useEffect} from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import api from '../../services/api';
 import {
     Center,
@@ -20,6 +19,9 @@ import {EmailIcon, LockIcon} from '@chakra-ui/icons';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { connect } from 'react-redux';
+import { getInfoloading, getUsersEmail, getUsersToken } from "../../store/selectors/auth";
+import { getUser, signIn } from "../../store/actions/auth";
 
 
 const schema = yup.object({
@@ -31,20 +33,19 @@ const schema = yup.object({
 
 
   
-const SignIn = () => {
+const SignIn = ( props ) => {
     const toast = useToast();
     const push = useNavigate();
     const [loading, setLoading] = useState(0);
-    const { user, signIn} = useAuth();
     const { register, handleSubmit, formState: { errors } } =  useForm({
         resolver: yupResolver(schema),
     });
     
     const onSubmit = async data =>{
         try {
-            setLoading(1)
+           setLoading(1)
             const response = await api.auth.login(data);
-            await signIn(response.data)
+            await props.signInUser(response.data)
             push('/Profile')
           } catch (e) {
             toast({
@@ -54,11 +55,13 @@ const SignIn = () => {
                 isClosable: true,
               })
         }finally{
-            setLoading(0)
+           setLoading(0)
         }
     };
 
-
+    useEffect(() => {
+        props.getUsers();
+      }, [props.getUsers])
 return (
         
     <Center p='6'>
@@ -82,7 +85,7 @@ return (
 
                 <p>У Вас нет аккаунта? <Link to='/SignUp'>Регистрация</Link></p>
 
-                <Button type='submit'>{loading === 1 ? <Spinner/>: 'Login'}</Button>
+                <Button type='submit' >{loading === 1 ? <Spinner/>: 'Login'}</Button>
 
                 
                 <Alert 
@@ -97,4 +100,18 @@ return (
     );
 };
 
-export default SignIn;
+const mapStateToProps = (state, props) => ({
+    token: getUsersToken(state),
+    email: getUsersEmail(state),
+   // loading: getInfoloading(state)
+})
+
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        signInUser: (data) => dispatch(signIn(data)),
+        getUsers: () => dispatch(getUser()),
+
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

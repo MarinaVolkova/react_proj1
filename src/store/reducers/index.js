@@ -1,10 +1,12 @@
-import addDelReducer from "./addDel";
-import counterReducer from "./modifElem/modifElem";
+import usersReducer from "./auth";
+import catsReducer from "./cats";
+import counterReducer from "./counter/counter";
 
 
 const rootReducer = {
-  addDel: addDelReducer,
-  counter:counterReducer
+  cats: catsReducer,
+  counter: counterReducer,
+  users: usersReducer
 }
 
 export default rootReducer;

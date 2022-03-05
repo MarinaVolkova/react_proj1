@@ -3,15 +3,14 @@ import { connect } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Container, Flex, Heading, Button} from '@chakra-ui/react';
 import {ViewIcon} from '@chakra-ui/icons';
-import { useAuth } from "../context/AuthContext";
-import { add } from "../store/actions/addDel";
+import { add } from "../store/actions/cats";
+import { logOut } from "../store/actions/auth";
 
 
 const Header = (data ) =>{
-    const { user, logOut} = useAuth();
     const navigate = useNavigate();
     const login = () => {
-        logOut();
+        data.logOutUser();
         navigate('/login');
     }
     return(
@@ -37,7 +36,8 @@ const Header = (data ) =>{
 }
 const mapDispatchToProps = (dispatch) => {
     return {
-        addElem: () => dispatch(add())
+        addElem: () => dispatch(add()),
+        logOutUser: () => dispatch(logOut())
     }
 }
 export default connect(null, mapDispatchToProps)(Header);

@@ -1,17 +1,19 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container, Flex } from '@chakra-ui/react'
 import Card from '../../components/Card';
 import { getCatData } from '../../store/selectors/cats';
 
 
-const Home = (props) => {
+const Home = () => {
+
+    const data = useSelector(state => getCatData(state))
 
     return(
         <Container maxW = 'container.xl'> 
             <Flex justifyContent='space-around' alignItems='center' flexWrap='wrap' >
             {
-                    props.data.map(({ id, imageUrl, imageAlt, title}) => (<Card
+                    data.map(({ id, imageUrl, imageAlt, title}) => (<Card
                           key={id}
                           id={id}
                           imageUrl={imageUrl}
@@ -25,8 +27,5 @@ const Home = (props) => {
         </Container>
     );
 }
-const mapStateToProps = (state, props) => ({
-    data: getCatData(state)
-})
 
-export default connect(mapStateToProps, null)(Home);
+export default Home;

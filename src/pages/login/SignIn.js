@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import api from '../../services/api';
@@ -19,9 +19,11 @@ import {EmailIcon, LockIcon} from '@chakra-ui/icons';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { connect } from 'react-redux';
-import { getInfoloading, getUsersEmail, getUsersToken } from "../../store/selectors/auth";
-import { getUser, signIn } from "../../store/actions/auth";
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { getStatusError, getStatusResponse, getUsersEmail, getUsersToken } from "../../store/selectors/profiles";
+import { getInfoloading } from "../../store/selectors/auth";
+import { getUser, login, signIn } from "../../store/reducers/elemSlices/profileSlice/profileSlice";
+
 
 
 const schema = yup.object({
@@ -33,51 +35,56 @@ const schema = yup.object({
 
 
   
-const SignIn = ( props ) => {
-    const toast = useToast();
+const SignIn =  () => {
+    const dispatch = useDispatch();
+    const signInUser = (data) => dispatch(signIn(data));
+    const loginUser = (data) => dispatch(login(data));
+    const selectorsElem = useSelector(state => ({
+        token: getUsersToken(state),
+        email: getUsersEmail(state),
+        loading: getInfoloading(state),
+        error: getStatusError(state),
+        status: getStatusResponse(state)
+      }));
+
+
+    // const toast = useToast();
     const push = useNavigate();
-    const [loading, setLoading] = useState(0);
     const { register, handleSubmit, formState: { errors } } =  useForm({
         resolver: yupResolver(schema),
     });
-    
-    const onSubmit = async data =>{
-        try {
-           setLoading(1)
-            const response = await api.auth.login(data);
-            await props.signInUser(response.data)
-            push('/Profile')
-          } catch (e) {
-            toast({
-                title: `${e.response.data.errors.password ?? e.response.data.errors.email}`,
-                position: 'top',
-                status: 'error',
-                isClosable: true,
-              })
-        }finally{
-           setLoading(0)
-        }
-    };
+      
+const onSubmit = async (data) =>{
+    try {
+        await loginUser(data)
+    } catch (e) {
+        return new Error(e)
+    }
+};
 
-    useEffect(() => {
-        props.getUsers();
-      }, [props.getUsers])
+const pushList = () =>{
+    if(!selectorsElem.error && selectorsElem.status === 'login fulfilled'){
+        push('/Profile')
+    }
+}
+useEffect(() => {
+    pushList()
+}, [selectorsElem]);
+
 return (
         
     <Center p='6'>
         
         <form onSubmit={handleSubmit(onSubmit)} >
             <Stack spacing = {4} w='md' h='md'>
-
-                <p>Введите адрес электронной почты</p>
+                <p>Введите адрес электронной почты:</p>
                 <InputGroup>
                 <InputLeftElement children={<EmailIcon color='#C7CBE3'/>} />
                 <Input  type='text' placeholder='Email'  {...register("email")}/>
                 </ InputGroup>
 
                 
-                    
-                <p>Введите пароль</p>
+                <p>Введите пароль:</p>
                 <InputGroup>
                 <InputLeftElement children={<LockIcon color='#C7CBE3'/>} />
                 <Input type='password' placeholder='Password' {...register("password")} required/>
@@ -85,33 +92,22 @@ return (
 
                 <p>У Вас нет аккаунта? <Link to='/SignUp'>Регистрация</Link></p>
 
-                <Button type='submit' >{loading === 1 ? <Spinner/>: 'Login'}</Button>
-
-                
+                <Button type='submit' >{selectorsElem.loading === true? <Spinner/>: 'Login'}</Button>
+         
                 <Alert 
-                status={errors.email?.message? 'error':'success'} 
-                display={errors.email?.message? 'Center':'none'}>
+                status={ errors.email?.message || selectorsElem.error ? 'error':'success' } 
+                display={ errors.email?.message || selectorsElem.error ? 'Center':'none' }
+               >
                 <AlertIcon />
-                <AlertTitle > {errors.email?.message}</AlertTitle>
+                <AlertTitle > { errors.email?.message ?? selectorsElem.error } </AlertTitle>
                 </Alert>
+
             </Stack>
         </form>
     </Center>
+    
     );
+    
 };
 
-const mapStateToProps = (state, props) => ({
-    token: getUsersToken(state),
-    email: getUsersEmail(state),
-   // loading: getInfoloading(state)
-})
-
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-        signInUser: (data) => dispatch(signIn(data)),
-        getUsers: () => dispatch(getUser()),
-
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
+export default SignIn;

@@ -1,7 +1,6 @@
 import React, {useEffect, useContext, useState} from "react";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import api from '../../services/api';
 import {
     Center,
@@ -20,8 +19,9 @@ import {EmailIcon, LockIcon, InfoOutlineIcon} from '@chakra-ui/icons';
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { getUser, signUn } from "../../store/actions/auth";
+import { signUn } from "../../store/actions/profiles";
 import { connect } from "react-redux";
+import { getUser } from "../../store/reducers/elemSlices/profileSlice/profileSlice";
 
 
 const schema = yup.object({

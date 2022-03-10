@@ -1,32 +1,40 @@
 import React from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Container, Flex, Heading, Button} from '@chakra-ui/react';
-import {ViewIcon} from '@chakra-ui/icons';
-import { add } from "../store/actions/cats";
-import { logOut } from "../store/actions/auth";
+import { ADD } from "../store/reducers/elemSlices/catsSlice/catsSlice";
+import { logOut } from "../store/reducers/elemSlices/profileSlice/profileSlice";
+import { getUsersEmail, getUsersToken } from "../store/selectors/profiles";
 
 
-const Header = (data ) =>{
+const Header = () =>{
+    const dispatch = useDispatch();
+    const addElem = () => dispatch(ADD());
+    const logOutUser = () => dispatch(logOut());
     const navigate = useNavigate();
     const login = () => {
-        data.logOutUser();
+        logOutUser();
         navigate('/login');
     }
+
+    const selectorsElem = useSelector(state => ({
+        token: getUsersToken(state)
+      }));
+
     return(
     <Box as='header' background='#E6DCEA' boxShadow='base' color='#2b6cb0'>
         <Container maxW='container.lg' padding='0.5rem'>
             <Flex justifyContent='space-between' alignItems='center'>
                 <Heading fontSize='md' fontFamily='monospace' color='#6b46c1'> <Link to='/'> CatCom </Link></Heading>
-                    <Button colorScheme='purple' variant='outline' onClick={()=> data.addElem()}>Добавить</Button>
+                    <Button colorScheme='purple' variant='outline' onClick={()=> addElem()}>Добавить</Button>
                 
                      {
-                         localStorage.token ?   <Link to='/Profile'><ViewIcon w={6} h={6} color="#6b46c1"/></Link> :  null
+                         selectorsElem.token ?    <Button colorScheme='purple' variant='outline' onClick={()=> navigate('/Profile')}> Профиль</Button> :  null
                      } 
                 
                     {
-                         localStorage.token ? <Button colorScheme='purple' variant='outline' onClick={()=> login()}> Выйти </Button> :
-                         <Button colorScheme='purple' variant='outline'> <Link to='/login'>Войти</Link> </Button>
+                         selectorsElem.token ? <Button colorScheme='purple' variant='outline' onClick={()=> login()}> Выйти </Button> :
+                         <Button colorScheme='purple' variant='outline' onClick={()=> navigate('/login')}> Войти </Button>
                     } 
                     
             </Flex>
@@ -34,10 +42,5 @@ const Header = (data ) =>{
     </Box>
     )
 }
-const mapDispatchToProps = (dispatch) => {
-    return {
-        addElem: () => dispatch(add()),
-        logOutUser: () => dispatch(logOut())
-    }
-}
-export default connect(null, mapDispatchToProps)(Header);
+
+export default Header;
